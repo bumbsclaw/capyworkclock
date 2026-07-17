@@ -79,14 +79,14 @@ test("snap recipe has strict metadata and a minimal build dependency graph", asy
   assert.doesNotMatch(recipe, /^\s*extensions:/m);
   assert.match(
     recipe,
-    /apps:\n  capy-work-clock:[\s\S]*?    plugs:\n      - desktop\n      - wayland\n\n/,
+    /apps:\n  capy-work-clock:[\s\S]*?    plugs:\n      - desktop\n      - opengl\n      - wayland\n\n/,
   );
   assert.match(recipe, /^  GDK_BACKEND: wayland$/m);
-  assert.match(recipe, /^  LIBGL_ALWAYS_SOFTWARE: '1'$/m);
-  assert.match(recipe, /^  WEBKIT_DISABLE_DMABUF_RENDERER: '1'$/m);
+  assert.doesNotMatch(recipe, /LIBGL_ALWAYS_SOFTWARE/);
+  assert.doesNotMatch(recipe, /WEBKIT_DISABLE_DMABUF_RENDERER/);
   assert.doesNotMatch(
     recipe,
-    /^\s+- (audio-playback|audio-record|dbus|desktop-legacy|gsettings|home|network|network-bind|opengl|personal-files|removable-media|system-files|x11)$/m,
+    /^\s+- (audio-playback|audio-record|dbus|desktop-legacy|gsettings|home|network|network-bind|personal-files|removable-media|system-files|x11)$/m,
   );
   assert.doesNotMatch(
     recipe,

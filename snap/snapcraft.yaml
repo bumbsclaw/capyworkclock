@@ -43,10 +43,12 @@ apps:
       - usr/bin/capy-wayland-launch
     plugs:
       - desktop
+      - opengl
       - wayland
 
 # These content plugs expose only Canonical's read-only runtime files. The app
-# has no X11, legacy desktop, GSettings, OpenGL-device, network, or home plug.
+# has no X11, legacy desktop, GSettings, network, or home plug. The OpenGL plug
+# is the sole additional permission needed for hardware-accelerated rendering.
 plugs:
   desktop:
     mount-host-font-cache: false
@@ -67,8 +69,6 @@ environment:
   GSETTINGS_BACKEND: keyfile
   GTK_IM_MODULE: gtk-im-context-simple
   NO_AT_BRIDGE: '1'
-  LIBGL_ALWAYS_SOFTWARE: '1'
-  WEBKIT_DISABLE_DMABUF_RENDERER: '1'
 
 layout:
   /usr/share/libdrm:

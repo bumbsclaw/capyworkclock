@@ -16,7 +16,5 @@ fi
 
 export GDK_BACKEND=wayland
 export CLUTTER_BACKEND=wayland
-export LIBGL_ALWAYS_SOFTWARE=1
-export WEBKIT_DISABLE_DMABUF_RENDERER=1
 
 exec "$gpu_wrapper" "$desktop_launcher" "$@"
