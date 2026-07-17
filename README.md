@@ -162,7 +162,11 @@ bundle and a small GTK/WebKit launcher; it does not embed Node.js, Electron,
 Capacitor, Gradle, the Android project, or the Cloudflare deployment runtime.
 GTK and WebKit are supplied by Canonical's shared GNOME content snap instead of
 being duplicated in this package. The application is strictly confined and
-does not request `network`, `network-bind`, or `home` access.
+Wayland-only. Its only system interfaces are `desktop`, for the user-mediated
+file portal, and `wayland`, for its window. Canonical's GNOME and Mesa content
+snaps provide read-only runtime files. It does not request X11, legacy desktop,
+GSettings, OpenGL-device, network, home, removable-media, audio, or camera
+access. Software rendering keeps GPU device access outside the permission set.
 
 Install Snapcraft and build from the repository root:
 

@@ -7,4 +7,3 @@ Icon=${SNAP}/meta/gui/capy-work-clock.png
 Terminal=false
 Categories=Office;Utility;
 StartupNotify=true
-StartupWMClass=capy-work-clock

@@ -1,0 +1,22 @@
+#!/bin/bash
+set -euo pipefail
+
+if [[ -z "${WAYLAND_DISPLAY:-}" ]]; then
+  echo "Capy Work Clock requires a Wayland session." >&2
+  exit 1
+fi
+
+gpu_wrapper="$SNAP/gpu-2404/bin/gpu-2404-provider-wrapper"
+desktop_launcher="$SNAP/gnome-platform/command-chain/desktop-launch"
+
+if [[ ! -x "$gpu_wrapper" || ! -x "$desktop_launcher" ]]; then
+  echo "Capy Work Clock's read-only desktop runtimes are not connected." >&2
+  exit 1
+fi
+
+export GDK_BACKEND=wayland
+export CLUTTER_BACKEND=wayland
+export LIBGL_ALWAYS_SOFTWARE=1
+export WEBKIT_DISABLE_DMABUF_RENDERER=1
+
+exec "$gpu_wrapper" "$desktop_launcher" "$@"

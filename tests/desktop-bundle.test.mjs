@@ -76,9 +76,22 @@ test("snap recipe has strict metadata and a minimal build dependency graph", asy
     recipe,
     /uses minimal resources:[\s\S]+records[\s\S]+only once per\n  minute/,
   );
-  assert.match(recipe, /extensions: \[gnome\]/);
-  assert.doesNotMatch(recipe, /^\s+(stage-packages|plugs):/m);
-  assert.doesNotMatch(recipe, /^\s+- (dbus|home|network|network-bind)$/m);
+  assert.doesNotMatch(recipe, /^\s*extensions:/m);
+  assert.match(
+    recipe,
+    /apps:\n  capy-work-clock:[\s\S]*?    plugs:\n      - desktop\n      - wayland\n\n/,
+  );
+  assert.match(recipe, /^  GDK_BACKEND: wayland$/m);
+  assert.match(recipe, /^  LIBGL_ALWAYS_SOFTWARE: '1'$/m);
+  assert.match(recipe, /^  WEBKIT_DISABLE_DMABUF_RENDERER: '1'$/m);
+  assert.doesNotMatch(
+    recipe,
+    /^\s+- (audio-playback|audio-record|dbus|desktop-legacy|gsettings|home|network|network-bind|opengl|personal-files|removable-media|system-files|x11)$/m,
+  );
+  assert.doesNotMatch(
+    recipe,
+    /^  (gtk-3-themes|icon-themes|sound-themes):$/m,
+  );
   assert.match(launcher, /G_APPLICATION_NON_UNIQUE/);
   assert.doesNotMatch(launcher, /G_APPLICATION_DEFAULT_FLAGS/);
 

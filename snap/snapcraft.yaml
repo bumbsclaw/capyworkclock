@@ -39,7 +39,49 @@ apps:
   capy-work-clock:
     command: usr/bin/capy-work-clock
     desktop: meta/gui/capy-work-clock.desktop
-    extensions: [gnome]
+    command-chain:
+      - usr/bin/capy-wayland-launch
+    plugs:
+      - desktop
+      - wayland
+
+# These content plugs expose only Canonical's read-only runtime files. The app
+# has no X11, legacy desktop, GSettings, OpenGL-device, network, or home plug.
+plugs:
+  desktop:
+    mount-host-font-cache: false
+  gpu-2404:
+    interface: content
+    target: $SNAP/gpu-2404
+    default-provider: mesa-2404
+  gnome-46-2404:
+    interface: content
+    target: $SNAP/gnome-platform
+    default-provider: gnome-46-2404
+
+environment:
+  SNAP_DESKTOP_RUNTIME: $SNAP/gnome-platform
+  GTK_USE_PORTAL: '1'
+  GDK_BACKEND: wayland
+  CLUTTER_BACKEND: wayland
+  GSETTINGS_BACKEND: keyfile
+  GTK_IM_MODULE: gtk-im-context-simple
+  NO_AT_BRIDGE: '1'
+  LIBGL_ALWAYS_SOFTWARE: '1'
+  WEBKIT_DISABLE_DMABUF_RENDERER: '1'
+
+layout:
+  /usr/share/libdrm:
+    bind: $SNAP/gpu-2404/libdrm
+  /usr/share/drirc.d:
+    symlink: $SNAP/gpu-2404/drirc.d
+  /usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/webkit2gtk-4.1:
+    bind: $SNAP/gnome-platform/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/webkit2gtk-4.1
+  /usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libproxy:
+    bind: $SNAP/gnome-platform/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libproxy
+
+assumes:
+  - snapd2.43
 
 parts:
   capy-work-clock:
@@ -47,9 +89,14 @@ parts:
     source: .
     build-snaps:
       - node/22/stable
+      - gnome-46-2404-sdk
     build-packages:
       - gcc
       - pkg-config
+    build-environment:
+      - PATH: /snap/gnome-46-2404-sdk/current/usr/bin${PATH:+:$PATH}
+      - LD_LIBRARY_PATH: /snap/gnome-46-2404-sdk/current/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR:/snap/gnome-46-2404-sdk/current/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR:/snap/gnome-46-2404-sdk/current/usr/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+      - PKG_CONFIG_PATH: /snap/gnome-46-2404-sdk/current/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/pkgconfig:/snap/gnome-46-2404-sdk/current/usr/lib/pkgconfig:/snap/gnome-46-2404-sdk/current/usr/share/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}
     override-build: |
       set -eu
       npm ci --prefix snap/build-deps --ignore-scripts --no-audit --no-fund
@@ -63,6 +110,8 @@ parts:
         $(pkg-config --cflags --libs gtk+-3.0 webkit2gtk-4.1)
       install -Dm755 capy-work-clock \
         "$CRAFT_PART_INSTALL/usr/bin/capy-work-clock"
+      install -Dm755 snap/local/capy-wayland-launch \
+        "$CRAFT_PART_INSTALL/usr/bin/capy-wayland-launch"
       install -d "$CRAFT_PART_INSTALL/usr/share/capy-work-clock"
       cp -a dist-desktop/. \
         "$CRAFT_PART_INSTALL/usr/share/capy-work-clock/"
