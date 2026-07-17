@@ -1,0 +1,27 @@
+node_modules/
+.next/
+.vinext/
+dist/
+dist-mobile/
+dist-desktop/
+*.snap
+parts/
+prime/
+stage/
+.snapcraft/
+playwright-report/
+test-results/
+.wrangler/
+.openai/
+.sites-runtime/
+*.tsbuildinfo
+
+# Android Studio and Gradle build state (the Android source project is tracked).
+android/.gradle/
+android/.idea/
+android/build/
+android/app/build/
+android/local.properties
+android/captures/
+*.jks
+*.keystore

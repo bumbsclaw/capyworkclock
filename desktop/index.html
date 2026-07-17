@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#f6f0e3" />
+    <meta
+      name="description"
+      content="A cozy, local-first work timer for healthy boundaries and complete clock-offs."
+    />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; connect-src 'none'; img-src 'self' data: blob:; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; base-uri 'none'; form-action 'none'"
+    />
+    <style>
+      html,
+      body,
+      #root {
+        min-height: 100%;
+        margin: 0;
+        background: #f6f0e3;
+      }
+      .launch-shell {
+        display: grid;
+        min-height: 100vh;
+        place-content: center;
+        gap: 14px;
+        color: #243e32;
+        font: 600 1rem/1.4 Georgia, serif;
+        text-align: center;
+      }
+      .launch-shell img {
+        width: 72px;
+        height: 72px;
+        margin: auto;
+        border-radius: 50%;
+      }
+    </style>
+    <link rel="icon" href="./favicon.png" />
+    <title>Capybara Healthy Work Boundaries Clock</title>
+  </head>
+  <body>
+    <div id="root">
+      <div class="launch-shell" role="status" aria-label="Opening Capy Work Clock">
+        <img src="./boundary-clock-icon.webp" alt="" width="72" height="72" />
+        <span>Opening your gentle work clock…</span>
+      </div>
+    </div>
+    <script type="module" src="./main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,70 @@
+name: capy-work-clock
+title: Capy Work Clock
+base: core24
+version: '1.0.0'
+summary: Cozy local-first work timer for healthy boundaries
+description: |
+  Clyde the Capybara works remotely from a pond-side desk where the Wi-Fi is
+  suspiciously powered by coconuts. One evening, he got so absorbed in a
+  spreadsheet that he worked straight through sunset soaking club. So he built
+  Capy Work Clock to remember when work ends and the important business of
+  soaking begins.
+
+  Capy Work Clock is a gentle timer that helps remote workers protect the
+  boundary between work and rest. Start the day, take breaks, resume, and clock
+  off while seeing exact daily and Monday-to-Sunday totals.
+
+  The snap uses minimal resources: instead of ticking every second, it records
+  timestamped events and ordinarily recalculates the display only once per
+  minute.
+
+  Recorded time stays on this device. The app has no account, analytics,
+  application backend, or network requirement. It supports manual corrections,
+  configurable weekly targets, recent-history undo, validated JSON backup and
+  restore, and exact rollups for older history.
+license: Apache-2.0
+website: https://github.com/bowenfan96/capy-work-clock
+contact: https://github.com/bowenfan96/capy-work-clock/issues
+source-code: https://github.com/bowenfan96/capy-work-clock
+issues: https://github.com/bowenfan96/capy-work-clock/issues
+icon: snap/gui/capy-work-clock.png
+grade: stable
+confinement: strict
+
+platforms:
+  amd64:
+  arm64:
+
+apps:
+  capy-work-clock:
+    command: usr/bin/capy-work-clock
+    desktop: meta/gui/capy-work-clock.desktop
+    extensions: [gnome]
+
+parts:
+  capy-work-clock:
+    plugin: nil
+    source: .
+    build-snaps:
+      - node/22/stable
+    build-packages:
+      - gcc
+      - pkg-config
+    override-build: |
+      set -eu
+      npm ci --prefix snap/build-deps --ignore-scripts --no-audit --no-fund
+      if [ ! -e node_modules ]; then
+        ln -s snap/build-deps/node_modules node_modules
+      fi
+      snap/build-deps/node_modules/.bin/vite build --config vite.desktop.config.ts
+      gcc -O2 -pipe -Wall -Wextra -Werror \
+        desktop/capy-work-clock.c \
+        -o capy-work-clock \
+        $(pkg-config --cflags --libs gtk+-3.0 webkit2gtk-4.1)
+      install -Dm755 capy-work-clock \
+        "$CRAFT_PART_INSTALL/usr/bin/capy-work-clock"
+      install -d "$CRAFT_PART_INSTALL/usr/share/capy-work-clock"
+      cp -a dist-desktop/. \
+        "$CRAFT_PART_INSTALL/usr/share/capy-work-clock/"
+      install -Dm644 LICENSE \
+        "$CRAFT_PART_INSTALL/usr/share/doc/capy-work-clock/copyright"

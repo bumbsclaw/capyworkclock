@@ -1,0 +1,79 @@
+{
+  "name": "capybara-boundary-clock",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "install:ci": "bash scripts/install-ci.sh",
+    "dev": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vite",
+    "dev:web": "npm run dev",
+    "build": "bash scripts/build-verified.sh",
+    "build:web": "npm run build",
+    "build:android": "vite build --config vite.mobile.config.ts",
+    "build:desktop": "vite build --config vite.desktop.config.ts",
+    "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
+    "android:sync": "npm run build:android && cap sync android && node scripts/prepare-android-project.mjs",
+    "android:assets": "node scripts/generate-android-assets.mjs",
+    "android:open": "npm run android:sync && cap open android",
+    "android:run": "npm run android:sync && cap run android",
+    "android:apk": "npm run android:sync && cd android && ./gradlew :app:assembleDebug",
+    "android:check": "npm run android:sync && cd android && ./gradlew :app:testDebugUnitTest :app:lintDebug :app:lintRelease :app:assembleDebug :app:assembleDebugAndroidTest :app:bundleRelease",
+    "android:check:device": "npm run android:sync && cd android && ./gradlew :app:connectedDebugAndroidTest",
+    "test": "npm run typecheck && npm run test:unit && npm run test:ui && npm run build && node --test tests/rendered-html.test.mjs && npm run test:android-bundle && npm run test:desktop-bundle",
+    "test:unit": "npm run test:clock && node --experimental-strip-types --test tests/storage.test.ts && node --test tests/performance-contract.test.mjs",
+    "test:ui": "vitest run --config vitest.config.ts",
+    "test:e2e": "playwright test",
+    "test:clock": "TZ=UTC node --experimental-strip-types --test tests/clock.test.ts",
+    "test:android-bundle": "npm run typecheck:shared && npm run build:android && node --test tests/android-bundle.test.mjs",
+    "test:desktop-bundle": "npm run build:desktop && node --test tests/desktop-bundle.test.mjs",
+    "typecheck": "tsc --noEmit",
+    "typecheck:shared": "tsc --noEmit -p tsconfig.mobile.json",
+    "validate:artifact": "bash scripts/validate-artifact.sh",
+    "lint": "bash scripts/sites-env.sh -- eslint . --ignore-pattern dist --ignore-pattern dist-desktop --ignore-pattern dist-mobile --ignore-pattern .next"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.4.2",
+    "@capacitor/app": "8.1.1",
+    "@capacitor/core": "8.4.2",
+    "@capacitor/preferences": "8.0.1",
+    "next": "16.2.10",
+    "react": "19.2.7",
+    "react-dom": "19.2.7"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.12.1",
+    "@capacitor/cli": "8.4.2",
+    "@cloudflare/vite-plugin": "1.45.0",
+    "@playwright/test": "1.61.1",
+    "@tailwindcss/postcss": "4.2.1",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "16.3.2",
+    "@testing-library/user-event": "14.6.1",
+    "@types/node": "22.19.19",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.2",
+    "@vitejs/plugin-rsc": "0.5.26",
+    "eslint": "9.39.4",
+    "eslint-config-next": "16.2.6",
+    "fake-indexeddb": "6.2.5",
+    "jsdom": "29.1.1",
+    "react-server-dom-webpack": "19.2.7",
+    "sharp": "0.35.3",
+    "tailwindcss": "4.2.1",
+    "typescript": "5.9.3",
+    "vinext": "0.0.50",
+    "vite": "8.1.4",
+    "vitest": "4.1.10",
+    "wrangler": "4.111.0"
+  },
+  "overrides": {
+    "next": {
+      "postcss": "8.5.10"
+    }
+  },
+  "type": "module",
+  "displayName": "Capybara Healthy Work Boundaries Clock"
+}

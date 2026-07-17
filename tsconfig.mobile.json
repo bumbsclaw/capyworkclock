@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowJs": false,
+    "incremental": false,
+    "plugins": []
+  },
+  "include": [
+    "capacitor.config.ts",
+    "components/**/*.tsx",
+    "lib/**/*.ts",
+    "mobile/**/*.ts",
+    "mobile/**/*.tsx",
+    "vite.mobile.config.ts"
+  ],
+  "exclude": ["node_modules"]
+}

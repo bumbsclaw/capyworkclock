@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Capy Work Clock
+Comment=Protect healthy work boundaries with a gentle local timer
+Exec=capy-work-clock
+Icon=${SNAP}/meta/gui/capy-work-clock.png
+Terminal=false
+Categories=Office;Utility;
+StartupNotify=true
+StartupWMClass=capy-work-clock
